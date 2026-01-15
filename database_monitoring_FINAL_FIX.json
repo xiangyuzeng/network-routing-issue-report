@@ -108,7 +108,7 @@
             "uid": "LJ7ObqYNk"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": "time_series",
           "rawQuery": true,
           "rawSql": "SELECT\n  data_date as time,\n  CONCAT(database_name, ' (', instance, ')') as metric,\n  data_length as value\nFROM luckyus_db_collection.t_dba_collect_database_info\nWHERE data_date >= DATE_SUB(NOW(), INTERVAL 90 DAY)\nORDER BY data_date",
           "refId": "A",
