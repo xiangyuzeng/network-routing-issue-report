@@ -5,8 +5,9 @@
 **最新更新**：`database_monitoring_FINAL_FIX.json` 已完全修复，包括：
 1. ✅ 移除双重嵌套问题 - Dashboard 可以成功导入
 2. ✅ 修复时间序列格式 - 第一个面板现在正确显示每个数据库为独立曲线
+3. ✅ 添加 Instance 变量 - 可通过下拉框选择要查看的数据库实例
 
-**当前版本**：v2 (2026-01-15)
+**当前版本**：v3 (2026-01-15)
 - 文件：`database_monitoring_FINAL_FIX.json`
 - Dashboard UID：需要重新导入以应用最新修复
 
@@ -28,6 +29,13 @@
 3. **验证修复**
    - 第一个面板（数据库大小变化趋势）应该显示多条独立曲线
    - 每个数据库（实例）应该有自己的颜色和曲线
+   - Dashboard 顶部应该显示 **Instance** 下拉框
+
+4. **使用 Instance 变量**
+   - 默认选择：`All` - 显示所有实例的数据
+   - 单选：点击下拉框选择一个实例，例如 `aws-luckyus-icyberdata-rw`
+   - 多选：按住 Ctrl/Cmd 键可以选择多个实例
+   - 所有 5 个 panels 都会根据选择的 Instance 自动过滤数据
 
 ---
 
