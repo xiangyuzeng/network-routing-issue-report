@@ -1,0 +1,477 @@
+{
+  "dashboard": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "数据库大小",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "tooltip": false,
+                "viz": false,
+                "legend": false
+              },
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "mode": "none",
+                "group": "A"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 3,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "max",
+              "min"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "9.4.17",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  UNIX_TIMESTAMP(data_date) as time_sec,\n  data_length as value,\n  database_name as metric\nFROM luckyus_db_collection.t_dba_collect_database_info \nWHERE instance = '$Instance_name'\nORDER BY data_date",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库大小变化趋势",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1073741824
+                },
+                {
+                  "color": "red",
+                  "value": 10737418240
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 9
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": ""
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.4.17",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT SUM(data_length) as total_size\nFROM (\n  SELECT database_name, MAX(data_date) as max_date\n  FROM luckyus_db_collection.t_dba_collect_database_info \n  WHERE instance = '$Instance_name'\n  GROUP BY database_name\n) latest\nJOIN luckyus_db_collection.t_dba_collect_database_info t\n  ON t.database_name = latest.database_name \n  AND t.data_date = latest.max_date\n  AND t.instance = '$Instance_name'",
+            "refId": "A"
+          }
+        ],
+        "title": "当前总大小",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 9
+        },
+        "id": 5,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": ""
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.4.17",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT COUNT(DISTINCT database_name) as db_count\nFROM luckyus_db_collection.t_dba_collect_database_info \nWHERE instance = '$Instance_name'",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库数量",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "tooltip": false,
+                "viz": false,
+                "legend": false
+              }
+            },
+            "mappings": [],
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 9
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "values": [
+              "value",
+              "percent"
+            ]
+          },
+          "pieType": "pie",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "9.4.17",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  t.database_name,\n  t.data_length\nFROM (\n  SELECT database_name, MAX(data_date) as max_date\n  FROM luckyus_db_collection.t_dba_collect_database_info \n  WHERE instance = '$Instance_name'\n  GROUP BY database_name\n) latest\nJOIN luckyus_db_collection.t_dba_collect_database_info t\n  ON t.database_name = latest.database_name \n  AND t.data_date = latest.max_date\n  AND t.instance = '$Instance_name'\nORDER BY t.data_length DESC",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库大小分布",
+        "type": "piechart"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "bytes"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "data_date"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 200
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "database_name"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 250
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "data_length"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "bytes"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 2,
+        "options": {
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "data_date"
+            }
+          ]
+        },
+        "pluginVersion": "9.4.17",
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT database_name, data_date, data_length\nFROM luckyus_db_collection.t_dba_collect_database_info \nWHERE instance = '$Instance_name'\nORDER BY data_date DESC, data_length DESC",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库大小详细数据",
+        "type": "table"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [
+      "database",
+      "monitoring"
+    ],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": false,
+            "text": "aws-luckyus-icyberdata-rw",
+            "value": "aws-luckyus-icyberdata-rw"
+          },
+          "datasource": {
+            "type": "mysql",
+            "uid": "LJ7ObqYNk"
+          },
+          "definition": "select distinct instance from t_dba_collect_database_info",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Instance",
+          "multi": false,
+          "name": "Instance_name",
+          "options": [],
+          "query": "select distinct instance from t_dba_collect_database_info",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-30d",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "数据库大小监控",
+    "uid": "2WiWiMIvk",
+    "version": 1,
+    "weekStart": ""
+  },
+  "folderId": 103,
+  "folderUid": "VqAOHURDk",
+  "message": "优化 dashboard：添加时间序列图表、统计面板和饼图，展示数据库大小变化趋势",
+  "overwrite": true
+}
