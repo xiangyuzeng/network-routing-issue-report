@@ -1,0 +1,192 @@
+{
+  "dashboard": {
+    "title": "数据库大小监控-超简化版",
+    "tags": ["database"],
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "",
+    "time": {
+      "from": "now-90d",
+      "to": "now"
+    },
+    "templating": {
+      "list": []
+    },
+    "panels": [
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "spanNulls": true
+            },
+            "unit": "decbytes"
+          }
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT data_date as time, CONCAT(database_name, ' (', instance, ')') as metric, data_length as value FROM luckyus_db_collection.t_dba_collect_database_info WHERE data_date >= DATE_SUB(NOW(), INTERVAL 90 DAY) ORDER BY data_date",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库大小趋势",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decbytes"
+          }
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 0,
+          "y": 10
+        },
+        "id": 2,
+        "options": {
+          "colorMode": "value"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT SUM(data_length) as value FROM (SELECT database_name, instance, MAX(data_date) as max_date FROM luckyus_db_collection.t_dba_collect_database_info GROUP BY database_name, instance) latest JOIN luckyus_db_collection.t_dba_collect_database_info t ON t.database_name = latest.database_name AND t.instance = latest.instance AND t.data_date = latest.max_date",
+            "refId": "A"
+          }
+        ],
+        "title": "当前总大小",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 12,
+          "y": 10
+        },
+        "id": 3,
+        "options": {
+          "colorMode": "value"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT COUNT(DISTINCT CONCAT(instance, '-', database_name)) as value FROM luckyus_db_collection.t_dba_collect_database_info",
+            "refId": "A"
+          }
+        ],
+        "title": "数据库总数",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "mysql",
+          "uid": "LJ7ObqYNk"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto"
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "data_length"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "decbytes"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 15
+        },
+        "id": 4,
+        "options": {
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "LJ7ObqYNk"
+            },
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT instance, database_name, data_date, data_length FROM luckyus_db_collection.t_dba_collect_database_info ORDER BY data_date DESC, data_length DESC LIMIT 500",
+            "refId": "A"
+          }
+        ],
+        "title": "详细数据",
+        "type": "table"
+      }
+    ],
+    "editable": true,
+    "uid": null
+  },
+  "folderId": 103,
+  "folderUid": "VqAOHURDk",
+  "overwrite": false
+}
